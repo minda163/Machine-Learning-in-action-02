@@ -31,20 +31,18 @@ print(classify0([0,0], group, labels,3))
 
 def file2matrix(filename):
     fr = open(filename)
-    numberOfLines = len(fr.readlines())      #get the number of lines in the file
+    arrayLines = fr.readlines()
+    numberOfLines = len(arrayLines)          #get the number of lines in the file
     returnMat = np.zeros((numberOfLines,3))  #prepare matrix to return
     classLabelVector = []                    #prepare labels return   
     index = 0
-    for line in fr.readlines():
-        print(line)
+    for line in arrayLines:
         line = line.strip()
-        print(line)
-        listFromLine = line.split('\t')
-        print(listFromLine[0:3])
+        listFromLine = line.split('\t')       
         returnMat[index,:] = listFromLine[0:3]
-        classLabelVector.append(int(listFromLine[-1]))
+        classLabelVector.append(listFromLine[-1])
         index += 1
     return returnMat,classLabelVector
 
 datingDataMat,datingLabels = file2matrix('datingTestSet.txt')
-print(datingDataMat,datingLabels) #出错：为什么全是0
+print(datingDataMat,datingLabels) #出错：为什么全是0:原因在fr.readlines()的直接调用上（不可直接多次调用）
