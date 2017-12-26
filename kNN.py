@@ -62,3 +62,19 @@ ax.scatter(datingDataMat[:,1],datingDataMat[:,2])
 plt.xlabel('Percentage of Time Spent Playing Video Games')
 plt.ylabel('Liters of Ice Cream Consumed Per Week')
 plt.show()
+
+#Data-normalizing
+def autoNorm(dataSet):
+    minVals = dataSet.min(0)#0代表坐标方向（找出每列的最小值)
+    maxVals = dataSet.max(0)
+    ranges = maxVals - minVals
+    normDataSet = np.zeros(np.shape(dataSet))
+    m = dataSet.shape[0]#0代表坐标方向（得到数据的列数)
+    #数值归一化公式（转化为0~1区间）：newValue = (oldValue-min)/(max-min)
+    normDataSet = dataSet - np.tile(minVals,(m,1))
+    normDataSet = normDataSet/np.tile(ranges,(m,1))
+    #元素相除，在NumPy中矩阵相除要调用函数linalg。solve（matA，matB）
+    return normDataSet,ranges,minVals
+    
+print(autoNorm(datingDataMat))
+
