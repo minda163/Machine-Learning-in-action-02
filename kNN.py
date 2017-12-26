@@ -27,7 +27,7 @@ def classify0(inX, dataSet, labels, k):
 group = np.array([[1.0,1.1],[1.0,1.0],[0,0],[0,0.1]])
 labels = ['A','A','B','B']
 
-print(classify0([0,0], group, labels,3))
+#print(classify0([0,0], group, labels,3))
 
 def file2matrix(filename):
     fr = open(filename)
@@ -38,11 +38,27 @@ def file2matrix(filename):
     index = 0
     for line in arrayLines:
         line = line.strip()
-        listFromLine = line.split('\t')       
+        listFromLine = line.split('\t')    
         returnMat[index,:] = listFromLine[0:3]
         classLabelVector.append(listFromLine[-1])
         index += 1
     return returnMat,classLabelVector
 
 datingDataMat,datingLabels = file2matrix('datingTestSet.txt')
-print(datingDataMat,datingLabels) #出错：为什么全是0:原因在fr.readlines()的直接调用上（不可直接多次调用）
+#print(datingDataMat,datingLabels) #出错：为什么全是0:原因在fr.readlines()的直接调用上（不可直接多次调用）
+#creating scatter plots with Matpotlib
+import matplotlib
+import matplotlib.pyplot as plt
+fig = plt.figure()
+ax = fig.add_subplot(111)
+ax.scatter(datingDataMat[:,1],datingDataMat[:,2])
+#ax.scatter(datingDataMat[:,1], datingDataMat[:,2], 15.0*(np.array(map(int,datingLabels))),15.0*(np.array(map(int,datingLabels)))) #重点修改本行
+#ax.scatter(datingDataMat[:,1],datingDataMat[:,2],(np.array(map(int,datingLabels))),(np.array(map(int,datingLabels))))
+'''
+#画出按labels分颜色的图失败，原因是没有能正确的把datingLabels里的字符串转化为int或者float的格式。
+#另外，就是python3与python2不兼容的问题：
+#python2的map是得到的list，而python3的map得到的是object，我不会调用？需要学习。。。
+'''
+plt.xlabel('Percentage of Time Spent Playing Video Games')
+plt.ylabel('Liters of Ice Cream Consumed Per Week')
+plt.show()
