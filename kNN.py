@@ -7,7 +7,7 @@ K-近邻算法
 
 import numpy as np
 import operator# 运算符模块
-# from os import listdir
+from os import listdir # 从os模块中导入函数listdir，它可以列出给定目录的文件名
 
 def classify0(inX, dataSet, labels, k):
     dataSetSize = dataSet.shape[0]# 读取dataSet的第一维度(即0轴）长度，使用shape[0]
@@ -56,7 +56,7 @@ ax = fig.add_subplot(111)
 
 tm = list(range(len(datingLabels)))
 
-for i in range(len(datingLabels)):#把内容从字符串转化为float并保存在列表tm中
+for i in range(len(datingLabels)):#把内容从字符串转化为数值并保存在列表tm中
     if datingLabels[i]=='didntLike':
         tm[i] = 1
     if datingLabels[i]=='smallDoses':
@@ -73,6 +73,7 @@ plt.ylabel('Liters of Ice Cream Consumed Per Week')
 #python2的map是得到的list，而python3的map得到的是object，我不会调用？需要学习。。。
 加了一个for循环，也改变了文件，把label从字符编程了数字，还是有错，显示的图不是彩色的是黑白的。。
 把list转化为array就变成彩色的了。
+成功！
 '''
 fig1 = plt.figure()
 ax1 = fig1.add_subplot(111)
@@ -112,3 +113,40 @@ def datingClassTest():
     print(errorCount)    
     
 datingClassTest()
+
+def img2vector(filename):
+    returnVect = np.zeros((1,1024))
+    fr = open(filename)
+    for i in range(32):
+        lineStr = fr.readline()
+        for j in range(32):
+            returnVect[0,32*i+j] = int(lineStr[j])
+    return returnVect
+print(img2vector('testDigits/0_13.txt'))
+
+#Handwritten digits testing code
+def handwritingClassTest():
+    hwLabels = []
+    trainingFileList = listdir('trainingDigits') #load the training set
+    m = len(trainingFileList)
+    trainingMat = np.zeros((m,1024))
+    for i in range(m):
+        fileNameStr = trainingFileList[i]
+        fileStr = fileNameStr.split('.')[0]     #take off .txt
+        classNumStr = int(fileStr.split('_')[0])
+        hwLabels.append(classNumStr)
+        trainingMat[i,:] = img2vector('trainingDigits/%s' % fileNameStr)
+    testFileList = listdir('testDigits')        #iterate through the test set
+    errorCount = 0.0
+    mTest = len(testFileList)
+    for i in range(mTest):
+        fileNameStr = testFileList[i]
+        fileStr = fileNameStr.split('.')[0]     #take off .txt
+        classNumStr = int(fileStr.split('_')[0])
+        vectorUnderTest = img2vector('testDigits/%s' % fileNameStr)
+        classifierResult = classify0(vectorUnderTest, trainingMat, hwLabels, 3)
+#        print("the classifier came back with: %d, the real answer is: %d" % (classifierResult, classNumStr))
+        if (classifierResult != classNumStr): errorCount += 1.0
+    print ("\nthe total number of errors is: %d" % errorCount)
+    print ("\nthe total error rate is: %f" % (errorCount/float(mTest)))
+handwritingClassTest()
